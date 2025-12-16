@@ -108,7 +108,8 @@ export default function Hero() {
               width={280}
               height={350}
               revealRadius={70}
-              imageSrc="/images/sebPortfolio1.jpeg"
+              imageSrcLight="/images/sebPortfolio1.jpeg"
+              imageSrcDark="/images/sebPortfolio2.jpeg"
             />
           </div>
         </div>

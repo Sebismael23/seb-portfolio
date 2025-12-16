@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useImageMesh } from './useImageMesh'
 import { useGeometricMesh } from './useGeometricMesh'
 import type { MousePosition, Triangle, Point } from './types'
 import { distance } from '@/lib/utils'
@@ -9,23 +10,65 @@ import { distance } from '@/lib/utils'
 interface GeometricPortraitProps {
   width?: number
   height?: number
-  imageSrc?: string
+  imageSrcLight?: string
+  imageSrcDark?: string
   revealRadius?: number
   className?: string
+  edgeThreshold?: number
+  pointDensity?: number
+  maxPoints?: number
 }
 
 export default function GeometricPortrait({
   width = 280,
   height = 350,
-  imageSrc,
+  imageSrcLight = '/images/sebPortfolio1.jpeg',
+  imageSrcDark = '/images/sebPortfolio2.jpeg',
   revealRadius = 70,
   className,
+  edgeThreshold = 25,      // Lower = more edges detected
+  pointDensity = 0.12,     // Higher = more points
+  maxPoints = 800,         // More points for better detail
 }: GeometricPortraitProps) {
   const [mousePos, setMousePos] = useState<MousePosition>({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const mesh = useGeometricMesh({
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'))
+    }
+    
+    // Initial check
+    checkDarkMode()
+    
+    // Watch for changes
+    const observer = new MutationObserver(checkDarkMode)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+    
+    return () => observer.disconnect()
+  }, [])
+
+  // Select image based on theme
+  const imageSrc = isDarkMode ? imageSrcDark : imageSrcLight
+
+  // Use image-based mesh when image is provided
+  const { mesh: imageMesh, isLoading } = useImageMesh({
+    imageSrc: imageSrc || '',
+    width,
+    height,
+    edgeThreshold,
+    pointDensity,
+    maxPoints,
+  })
+
+  // Fallback mesh for when no image or still loading
+  const fallbackMesh = useGeometricMesh({
     width,
     height,
     cols: 11,
@@ -33,6 +76,11 @@ export default function GeometricPortrait({
     randomization: 18,
     connectionDistance: 55,
   })
+
+  // Use image mesh if available and loaded, otherwise fallback
+  const mesh = imageSrc && !isLoading && imageMesh.points.length > 0 
+    ? imageMesh 
+    : fallbackMesh
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
