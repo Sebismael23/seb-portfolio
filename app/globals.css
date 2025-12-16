@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --border: #1f1f1f;
+  --card-bg: #141414;
+  --text-muted: #9ca3af;
+  --surface: #111111;
+  --navbar-bg: rgba(10, 10, 10, 0.8);
+}
+
+.light {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --accent-blue: #2563eb;
+  --accent-purple: #7c3aed;
+  --border: #e5e5e5;
+  --card-bg: #f9fafb;
+  --text-muted: #374151;
+  --surface: #f3f4f6;
+  --navbar-bg: rgba(255, 255, 255, 0.8);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+.light * {
+  scrollbar-color: #ccc transparent;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-blue);
+  color: white;
+}
+
+/* Cursor styles for interactive elements */
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
+/* Text gradient utility */
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 40px -10px var(--accent-blue);
+}
+
+.glow-purple {
+  box-shadow: 0 0 40px -10px var(--accent-purple);
+}
+
+/* Terminal cursor animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.terminal-cursor {
+  animation: blink 1s infinite;
+}
+
+/* Smooth transitions for theme */
+.transition-theme {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hide scrollbar while maintaining scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Responsive typography */
+@layer utilities {
+  .text-responsive-xl {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
+  }
+  
+  .text-responsive-2xl {
+    @apply text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl;
+  }
+}
