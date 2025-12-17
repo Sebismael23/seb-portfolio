@@ -118,11 +118,15 @@ export default function GeometricPortrait({
     >
       <div
         ref={containerRef}
-        className="relative cursor-crosshair group"
+        className="relative cursor-crosshair group transition-transform duration-300 ease-out"
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        style={{ width, height }}
+        style={{ 
+          width, 
+          height,
+          transform: isHovering ? 'scale(1.35)' : 'scale(1.1)',
+        }}
       >
         {/* Photo or silhouette placeholder */}
         <div className="absolute inset-0 rounded-xl overflow-hidden">
@@ -156,6 +160,17 @@ export default function GeometricPortrait({
           />
         </div>
 
+        {/* Dark overlay that follows cursor - darkens the photo to reveal lines */}
+        {isHovering && (
+          <div
+            className="absolute inset-0 pointer-events-none rounded-xl overflow-hidden"
+            style={{
+              background: `radial-gradient(circle ${revealRadius * 1.5}px at ${mousePos.x}px ${mousePos.y}px, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%)`,
+              transition: 'background 0.05s ease-out',
+            }}
+          />
+        )}
+
         {/* SVG Geometric Overlay */}
         <svg
           className="absolute inset-0 w-full h-full"
@@ -172,33 +187,14 @@ export default function GeometricPortrait({
                 y1={line.p1.y}
                 x2={line.p2.x}
                 y2={line.p2.y}
-                stroke={`rgba(255, 255, 255, ${opacity * 0.9})`}
-                strokeWidth={opacity > 0.1 ? 1 : 0}
+                stroke={`rgba(255, 255, 255, ${opacity})`}
+                strokeWidth={opacity > 0.1 ? 1.2 : 0}
                 strokeLinecap="round"
-                style={{ transition: 'all 0.12s ease-out' }}
+                style={{ transition: 'all 0.1s ease-out' }}
               />
             )
           })}
         </svg>
-
-        {/* Cursor glow effect */}
-        {isHovering && (
-          <div
-            className="absolute pointer-events-none rounded-full"
-            style={{
-              left: mousePos.x - 50,
-              top: mousePos.y - 50,
-              width: 100,
-              height: 100,
-              background:
-                'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
-              transition: 'left 0.05s, top 0.05s',
-            }}
-          />
-        )}
-
-        {/* Frame border */}
-        <div className="absolute inset-0 rounded-xl border border-border group-hover:border-border-light transition-colors duration-300" />
 
         {/* Hover hint */}
         <div
