@@ -105,11 +105,13 @@ export default function Hero() {
           {/* Geometric Portrait */}
           <div className="flex-shrink-0">
             <GeometricPortrait
-              width={280}
-              height={350}
+              width={300}
+              height={420}
               revealRadius={70}
               imageSrcLight="/images/sebPortfolio1.jpeg"
               imageSrcDark="/images/sebPortfolio2.jpeg"
+              meshSrcLight="/images/sebPortfolio1geometrics.jpg"
+              meshSrcDark="/images/sebPortfolio2geometrics.jpg"
             />
           </div>
         </div>

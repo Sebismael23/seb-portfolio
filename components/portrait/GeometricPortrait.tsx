@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useImageMesh } from './useImageMesh'
 import { useGeometricMesh } from './useGeometricMesh'
-import type { MousePosition, Triangle, Point } from './types'
+import type { MousePosition, LineSegment } from './types'
 import { distance } from '@/lib/utils'
 
 interface GeometricPortraitProps {
@@ -12,11 +12,12 @@ interface GeometricPortraitProps {
   height?: number
   imageSrcLight?: string
   imageSrcDark?: string
+  meshSrcLight?: string
+  meshSrcDark?: string
   revealRadius?: number
   className?: string
-  edgeThreshold?: number
-  pointDensity?: number
-  maxPoints?: number
+  lineThreshold?: number
+  minLineLength?: number
 }
 
 export default function GeometricPortrait({
@@ -24,11 +25,12 @@ export default function GeometricPortrait({
   height = 350,
   imageSrcLight = '/images/sebPortfolio1.jpeg',
   imageSrcDark = '/images/sebPortfolio2.jpeg',
-  revealRadius = 70,
+  meshSrcLight = '/images/sebPortfolio1geometrics.jpg',
+  meshSrcDark = '/images/sebPortfolio2geometrics.jpg',
+  revealRadius = 80,
   className,
-  edgeThreshold = 25,      // Lower = more edges detected
-  pointDensity = 0.12,     // Higher = more points
-  maxPoints = 800,         // More points for better detail
+  lineThreshold = 180,
+  minLineLength = 5,
 }: GeometricPortraitProps) {
   const [mousePos, setMousePos] = useState<MousePosition>({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
@@ -54,17 +56,19 @@ export default function GeometricPortrait({
     return () => observer.disconnect()
   }, [])
 
-  // Select image based on theme
+  // Select display image based on theme (the actual photo)
   const imageSrc = isDarkMode ? imageSrcDark : imageSrcLight
+  
+  // Select mesh source image based on theme (the line art for edge extraction)
+  const meshSrc = isDarkMode ? meshSrcDark : meshSrcLight
 
-  // Use image-based mesh when image is provided
+  // Use line art image for mesh extraction
   const { mesh: imageMesh, isLoading } = useImageMesh({
-    imageSrc: imageSrc || '',
+    imageSrc: meshSrc || '',
     width,
     height,
-    edgeThreshold,
-    pointDensity,
-    maxPoints,
+    lineThreshold,
+    minLineLength,
   })
 
   // Fallback mesh for when no image or still loading
@@ -78,9 +82,9 @@ export default function GeometricPortrait({
   })
 
   // Use image mesh if available and loaded, otherwise fallback
-  const mesh = imageSrc && !isLoading && imageMesh.points.length > 0 
+  const mesh = meshSrc && !isLoading && imageMesh.lines && imageMesh.lines.length > 0 
     ? imageMesh 
-    : fallbackMesh
+    : { ...fallbackMesh, lines: [] }
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -94,19 +98,12 @@ export default function GeometricPortrait({
     []
   )
 
-  const getTriangleOpacity = useCallback(
-    (triangle: Triangle): number => {
-      const centerX = (triangle.p1.x + triangle.p2.x + triangle.p3.x) / 3
-      const centerY = (triangle.p1.y + triangle.p2.y + triangle.p3.y) / 3
+  // Get opacity for a line segment based on distance from mouse
+  const getLineOpacity = useCallback(
+    (line: LineSegment): number => {
+      const centerX = (line.p1.x + line.p2.x) / 2
+      const centerY = (line.p1.y + line.p2.y) / 2
       const dist = distance(mousePos.x, mousePos.y, centerX, centerY)
-      return isHovering ? Math.max(0, 1 - dist / revealRadius) : 0
-    },
-    [mousePos, isHovering, revealRadius]
-  )
-
-  const getPointOpacity = useCallback(
-    (point: Point): number => {
-      const dist = distance(mousePos.x, mousePos.y, point.x, point.y)
       return isHovering ? Math.max(0, 1 - dist / revealRadius) : 0
     },
     [mousePos, isHovering, revealRadius]
@@ -128,13 +125,13 @@ export default function GeometricPortrait({
         style={{ width, height }}
       >
         {/* Photo or silhouette placeholder */}
-        <div className="absolute inset-0 rounded-2xl overflow-hidden">
+        <div className="absolute inset-0 rounded-xl overflow-hidden">
           {imageSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={imageSrc}
               alt="Portrait"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           ) : (
             // Gradient silhouette placeholder
@@ -165,32 +162,20 @@ export default function GeometricPortrait({
           viewBox={`0 0 ${width} ${height}`}
           style={{ mixBlendMode: 'screen' }}
         >
-          {/* Triangle mesh */}
-          {mesh.triangles.map((triangle, index) => {
-            const opacity = getTriangleOpacity(triangle)
+          {/* Line segments traced from line art */}
+          {mesh.lines && mesh.lines.map((line, index) => {
+            const opacity = getLineOpacity(line)
             return (
-              <polygon
-                key={`tri-${index}`}
-                points={`${triangle.p1.x},${triangle.p1.y} ${triangle.p2.x},${triangle.p2.y} ${triangle.p3.x},${triangle.p3.y}`}
-                fill={`rgba(59, 130, 246, ${opacity * 0.15})`}
+              <line
+                key={`line-${index}`}
+                x1={line.p1.x}
+                y1={line.p1.y}
+                x2={line.p2.x}
+                y2={line.p2.y}
                 stroke={`rgba(255, 255, 255, ${opacity * 0.9})`}
                 strokeWidth={opacity > 0.1 ? 1 : 0}
+                strokeLinecap="round"
                 style={{ transition: 'all 0.12s ease-out' }}
-              />
-            )
-          })}
-
-          {/* Vertex points */}
-          {mesh.points.map((point, index) => {
-            const opacity = getPointOpacity(point)
-            return (
-              <circle
-                key={`point-${index}`}
-                cx={point.x}
-                cy={point.y}
-                r={opacity > 0.5 ? 2.5 : 1.5}
-                fill={`rgba(139, 92, 246, ${opacity})`}
-                style={{ transition: 'all 0.1s ease-out' }}
               />
             )
           })}
@@ -213,7 +198,7 @@ export default function GeometricPortrait({
         )}
 
         {/* Frame border */}
-        <div className="absolute inset-0 rounded-2xl border border-border group-hover:border-border-light transition-colors duration-300" />
+        <div className="absolute inset-0 rounded-xl border border-border group-hover:border-border-light transition-colors duration-300" />
 
         {/* Hover hint */}
         <div

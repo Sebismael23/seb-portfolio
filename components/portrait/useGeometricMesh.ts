@@ -124,6 +124,6 @@ export function useGeometricMesh(config: MeshConfig): Mesh {
       }
     }
 
-    return { points, triangles }
+    return { points, triangles, lines: [] }
   }, [width, height, cols, rows, randomization, connectionDistance])
 }
