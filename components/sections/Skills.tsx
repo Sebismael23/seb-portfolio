@@ -7,8 +7,20 @@ import SkillBar from '@/components/ui/SkillBar'
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-24 md:py-32 px-6 md:px-8 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-surface-dark dark:from-surface-dark dark:via-surface-dark dark:to-surface-dark">
-      <div className="max-w-7xl mx-auto">
+    <section id="skills" className="py-24 md:py-32 px-6 md:px-8 relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-surface-dark dark:from-surface-dark dark:via-surface-dark dark:to-surface-dark">
+      {/* Gradient background for dark mode */}
+      <div 
+        className="absolute inset-0 hidden dark:block"
+        style={{
+          background: `
+            radial-gradient(ellipse 70% 50% at 70% 30%, rgba(139, 92, 246, 0.1) -20%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 30% 80%, rgba(59, 130, 246, 0.1) -20%, transparent 50%),
+            linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(15,15,20,0.4) 50%, rgba(0,0,0,0) 100%)
+          `,
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <SectionHeader label="CAPABILITIES" title="Tech Stack" />
 
         {/* Terminal Window */}

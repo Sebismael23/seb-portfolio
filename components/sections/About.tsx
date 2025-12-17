@@ -6,8 +6,20 @@ import SectionHeader from '@/components/ui/SectionHeader'
 
 export default function About() {
   return (
-    <section id="about" className="py-24 md:py-32 px-6 md:px-8">
-      <div className="max-w-7xl mx-auto">
+    <section id="about" className="py-24 md:py-32 px-6 md:px-8 relative overflow-hidden">
+      {/* Gradient background for dark mode */}
+      <div 
+        className="absolute inset-0 hidden dark:block"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 50% at 20% 40%, rgba(59, 130, 246, 0.08) 0%, transparent 110%),
+            radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 110%),
+            linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(10,10,15,0.5) 50%, rgba(0,0,0,0) 100%)
+          `,
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           {/* Text Content */}
           <div>
@@ -58,9 +70,14 @@ export default function About() {
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                  className="text-8xl mb-6"
+                  className="mb-6"
                 >
-                  👨‍💻
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src="/images/about1.png" 
+                    alt="Circuit Tree" 
+                    className="w-48 h-48 md:w-64 md:h-64 object-contain mx-auto"
+                  />
                 </motion.div>
                 <div className="font-mono text-foreground text-sm space-y-1">
                   <p>
@@ -70,7 +87,7 @@ export default function About() {
                     <span className="text-accent-purple">focus</span>: &quot;{personalInfo.title}&quot;
                   </p>
                   <p>
-                    <span className="text-green-400">status</span>: &quot;Building&quot;
+                    <span className="text-green-400">status</span>: &quot;Building Project and Growing&quot;
                   </p>
                 </div>
               </div>
