@@ -86,16 +86,31 @@ export default function GeometricPortrait({
     ? imageMesh 
     : { ...fallbackMesh, lines: [] }
 
+  // Scale factor for hover effect
+  const hoverScale = 1.35
+  const baseScale = 1.1
+  const currentScale = isHovering ? hoverScale : baseScale
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (!containerRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
+      
+      // Calculate center of the element
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      
+      // Get mouse position relative to center, then adjust for scale
+      const relativeX = (e.clientX - centerX) / currentScale
+      const relativeY = (e.clientY - centerY) / currentScale
+      
+      // Convert back to top-left origin coordinates
       setMousePos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+        x: width / 2 + relativeX,
+        y: height / 2 + relativeY,
       })
     },
-    []
+    [currentScale, width, height]
   )
 
   // Get opacity for a line segment based on distance from mouse
@@ -125,7 +140,7 @@ export default function GeometricPortrait({
         style={{ 
           width, 
           height,
-          transform: isHovering ? 'scale(1.35)' : 'scale(1.1)',
+          transform: `scale(${currentScale})`,
         }}
       >
         {/* Photo or silhouette placeholder */}
