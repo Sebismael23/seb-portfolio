@@ -147,13 +147,16 @@ export default function GeometricPortrait({
         }}
       >
         {/* Photo or silhouette placeholder */}
-        <div className="absolute inset-0 rounded-xl overflow-hidden">
+        <div 
+          className="absolute inset-0 overflow-hidden flex items-center justify-center"
+        >
           {imageSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={imageSrc}
               alt="Portrait"
-              className="w-full h-full object-contain"
+              className="max-w-full max-h-full object-contain"
+              style={{ borderRadius: '1rem' }}
             />
           ) : (
             // Gradient silhouette placeholder
