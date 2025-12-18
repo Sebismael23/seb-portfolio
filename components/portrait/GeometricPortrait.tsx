@@ -133,7 +133,7 @@ export default function GeometricPortrait({
     >
       <div
         ref={containerRef}
-        className="relative cursor-crosshair group transition-transform duration-300 ease-out"
+        className="relative cursor-crosshair group transition-all duration-300 ease-out"
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
@@ -141,6 +141,9 @@ export default function GeometricPortrait({
           width, 
           height,
           transform: `scale(${currentScale})`,
+          filter: isHovering 
+            ? 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.4)) drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3))' 
+            : 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.3)) drop-shadow(0 8px 10px rgba(0, 0, 0, 0.2))',
         }}
       >
         {/* Photo or silhouette placeholder */}
@@ -176,21 +179,39 @@ export default function GeometricPortrait({
         </div>
 
         {/* Dark overlay that follows cursor - darkens the photo to reveal lines */}
-        {isHovering && (
+        {isHovering && imageSrc && (
           <div
-            className="absolute inset-0 pointer-events-none rounded-xl overflow-hidden"
+            className="absolute inset-0 pointer-events-none overflow-hidden"
             style={{
+              WebkitMaskImage: `url(${imageSrc})`,
+              maskImage: `url(${imageSrc})`,
+              WebkitMaskSize: 'contain',
+              maskSize: 'contain',
+              WebkitMaskPosition: 'center',
+              maskPosition: 'center',
+              WebkitMaskRepeat: 'no-repeat',
+              maskRepeat: 'no-repeat',
               background: `radial-gradient(circle ${revealRadius * 1.5}px at ${mousePos.x}px ${mousePos.y}px, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%)`,
               transition: 'background 0.05s ease-out',
             }}
           />
         )}
 
-        {/* SVG Geometric Overlay */}
+        {/* SVG Geometric Overlay - masked to image shape */}
         <svg
           className="absolute inset-0 w-full h-full"
           viewBox={`0 0 ${width} ${height}`}
-          style={{ mixBlendMode: 'screen' }}
+          style={{ 
+            mixBlendMode: 'screen',
+            WebkitMaskImage: imageSrc ? `url(${imageSrc})` : undefined,
+            maskImage: imageSrc ? `url(${imageSrc})` : undefined,
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+          }}
         >
           {/* Line segments traced from line art */}
           {mesh.lines && mesh.lines.map((line, index) => {

@@ -81,13 +81,13 @@ export default function About() {
                 </motion.div>
                 <div className="font-mono text-foreground text-sm space-y-1">
                   <p>
-                    <span className="text-accent-blue">location</span>: &quot;{personalInfo.location}&quot;
+                    <span className="text-accent-blue">location</span>: {personalInfo.location}
                   </p>
                   <p>
-                    <span className="text-accent-purple">focus</span>: &quot;{personalInfo.title}&quot;
+                    <span className="text-accent-purple">focus</span>: {personalInfo.title}
                   </p>
                   <p>
-                    <span className="text-green-400">status</span>: &quot;Building Project and Growing&quot;
+                    <span className="text-green-400">status</span>: Building Project and Growing
                   </p>
                 </div>
               </div>

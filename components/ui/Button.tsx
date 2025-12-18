@@ -20,9 +20,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
 
     const variants = {
-      primary: 'bg-white text-black hover:scale-105 hover:shadow-lg hover:shadow-white/10',
-      secondary: 'border border-border-light text-white hover:border-gray-500 hover:bg-white/5',
-      ghost: 'text-gray-400 hover:text-white hover:bg-white/5',
+      primary: 'bg-foreground text-background hover:scale-105 hover:shadow-lg hover:shadow-foreground/10',
+      secondary: 'border border-border-light text-foreground hover:border-gray-500 hover:bg-foreground/5',
+      ghost: 'text-text-muted hover:text-foreground hover:bg-foreground/5',
     }
 
     const sizes = {
