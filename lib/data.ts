@@ -19,7 +19,7 @@ export const personalInfo = {
   ],
   social: {
     // github: "https://github.com/yourusername",
-    linkedin: "https://linkedin.com/in/sebastien-ismael",
+    linkedin: "https://linkedin.com/in/sebastien-ismael-365a40376",
   }
 }
 
@@ -94,19 +94,19 @@ export const skills: Skill[] = [
   { name: "JavaScript", level: 60, category: "core" },
   { name: "TypeScript", level: 65, category: "core" },
   { name: "SQL", level: 75, category: "core" },
-  
+
   // Backend
   { name: "Flask", level: 55, category: "backend" },
   { name: "Node.js", level: 65, category: "backend" },
   { name: "MySQL", level: 85, category: "backend" },
   { name: "REST APIs", level: 70, category: "backend" },
-  
+
   // Frontend
   { name: "React", level: 75, category: "frontend" },
   { name: "Next.js", level: 60, category: "frontend" },
   { name: "Tailwind", level: 60, category: "frontend" },
   { name: "HTML/CSS", level: 75, category: "frontend" },
-  
+
   // Data & Tools
   { name: "R", level: 35, category: "data" },
   { name: "Pandas", level: 70, category: "data" },
