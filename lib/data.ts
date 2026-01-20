@@ -42,6 +42,17 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: "greenradius",
+    title: "GreenRadius",
+    description: "Hyperlocal sustainability app that gamifies eco-friendly actions at the neighborhood level",
+    longDescription: "A community-driven B2B2C SaaS platform featuring neighborhood sustainability challenges, gamified leaderboards, an item-sharing marketplace, and real-time notifications. Built as a resident engagement tool for multifamily property managers in Salt Lake City.",
+    tech: ["Next.js", "TypeScript", "Supabase", "Zod", "Cloudinary", "Mailchimp"],
+    icon: "🌱",
+    color: "#22c55e",
+    live: "https://www.greenradius.app/index.html",
+    featured: true
+  },
+  {
     id: "fithub",
     title: "FitHub",
     description: "Comprehensive gym management system with 22 interconnected tables",
